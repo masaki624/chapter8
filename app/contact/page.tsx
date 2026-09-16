@@ -1,13 +1,13 @@
 "use client";
 
+import { useState } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
+
 type Form = {
   name: string;
   email: string;
   message: string;
 }
-
-import { useState } from 'react';
-import type { ChangeEvent, FormEvent } from 'react';
 
 export default function ContactPage() {
   const [form, setForm] = useState<Form>({

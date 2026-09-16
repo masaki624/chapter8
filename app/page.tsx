@@ -1,31 +1,25 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect} from 'react';
-
-export type Post = {
-  id: number;
-  title: string;
-  thumbnailUrl: string;
-  createdAt: string;
-  categories: string[];
-  content: string;
-}
+import { MicroCmsPost } from './_types/MicroCmsPost';
 
 export  default function TopPage() {
 
-  const [posts, setposts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<MicroCmsPost[]>([]);
   const [load, setLoad] = useState(true);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      setLoad(true);
-      const response  = await fetch('https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts');
-      const data = await response.json();
-      const postsData: Post[] =  data.posts;
-      setposts(postsData);
+    const fetcher = async () => {
+      const response  = await fetch('https://mu98a05l8b.microcms.io/api/v1/posts', {
+        headers: {
+          'X-MICROCMS-API-KEY': process.env.NEXT_PUBLIC_MICROCMS_API_KEY as string,
+        },
+      });
+      const { contents } = await response.json();
+      setPosts(contents);
       setLoad(false);
     };
-    fetchPosts();
+    fetcher();
   }, []);
 
   if(load) {
@@ -56,8 +50,8 @@ export  default function TopPage() {
                     </span>
                   <div className="flex gap-2">
                     {post.categories.map((cat) => (
-                    <span key={cat} className="text-[9px] bg-black text-white px-2 py-0.5 tracking-tighter uppercase">
-                      {cat}
+                    <span key={cat.id} className="text-[9px] bg-black text-white px-2 py-0.5 tracking-tighter uppercase">
+                      {cat.name}
                     </span>
                     ))}
                   </div>
